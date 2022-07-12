@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useStateValue } from "../AppState/AppState";
 
 function SubTotal() {
   const [{ basket }, dispatch] = useStateValue();
   const [subTotal, setSubTotal] = useState(Number(0));
+  const [disabled, setDisabled] = useState(false);
+  const navigate = useNavigate("");
 
   const summingUpItemsPrices = useCallback(() => {
     return basket.reduce((initial, item) => {
@@ -15,7 +18,12 @@ function SubTotal() {
 
   useEffect(() => {
     setSubTotal(summingUpItemsPrices().toFixed(2));
-  }, []);
+    if (basket.length > 0) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [basket]);
 
   return (
     <div className="flex flex-col justify-between w-full h-auto p-3 bg-slate-200 border border-solid border-[#dddddd] rounded-[3px] ">
@@ -28,7 +36,13 @@ function SubTotal() {
           This ordercontains a gift
         </label>
       </div>
-      <button className="bg-yellow-500 px-1 rounded-[2px] mt-[10px] h-auto border border-solid border-yellow-500 text-[#111] ">
+      <button
+        className={`amazon-btn mt-[10px] h-auto border-yellow-500 ${
+          disabled && "!cursor-not-allowed !bg-gray-500 !text-gray-800"
+        } `}
+        disabled={disabled}
+        onClick={() => navigate("/payment")}
+      >
         Proceed to Checkout
       </button>
     </div>

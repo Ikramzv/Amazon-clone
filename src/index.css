@@ -9,7 +9,7 @@
 
 @layer components  {
   .amazon-btn {
-    @apply  bg-[#f0c14b] border rounded-[3px] text-[#111] mt-[10px] px-1 
+    @apply  bg-[#f0c14b] border rounded-[3px] text-[#111] mt-[10px] px-1 hover:bg-yellow-600 active:bg-yellow-700 duration-300
   }
   .svg {
     @apply bg-[#cd9042] p-[5px] rounded-r-md active:bg-yellow-700
@@ -38,6 +38,7 @@
 
 body {
   background-color: rgb(234,237,237);
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -48,3 +49,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+}

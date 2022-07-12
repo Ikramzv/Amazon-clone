@@ -1,31 +1,23 @@
-import React from "react";
-import { useState } from "react";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../firebase/firebase";
-import { Link, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useStateValue } from "../AppState/AppState";
 import { actionTypes } from "../AppState/reducer";
+import { auth } from "../firebase/firebase";
 
-function Login() {
+function Register() {
+  const [{ user }, dispatch] = useStateValue();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate("");
-  const [{ user }, dispatch] = useStateValue();
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
 
-  const signIn = (e) => {
-    e.preventDefault();
-
-    signInWithEmailAndPassword(auth, email, password)
+  const register = () => {
+    createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         if (result) {
-          dispatch({
-            type: actionTypes.SET_USER,
-            user: result.user,
-          });
-          navigate("/");
+          alert("You have successfully registered ! Now , you can login !");
+          navigate("/login");
         }
       })
       .catch((err) => alert(err.message));
@@ -64,27 +56,32 @@ function Login() {
               required
             />
           </div>
-          <button
-            type="submit"
-            className="amazon-btn border border-[#a88734 #9c7e31 #846a29] h-8 mt-3 w-full"
-            onClick={signIn}
-          >
-            Sign in
-          </button>
+          <div className="flex flex-col gap-1">
+            <label>Username</label>
+            <input
+              type={"text"}
+              placeholder="Your username"
+              className="border border-black px-2 py-1 rounded-md"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
         </form>
         <p className="text-center text-sm font-semibold">
           By signing-in you agree to Amazon's Conditions of Use & Sale. Please
           see our Privacy Notice , our Cookies Notice and our Interest-Bases Ads
           Notice
         </p>
-        <Link to={"/register_account"}>
-          <button className="w-full text-center border border-gray-600 text-base bg-gray-300 mt-3 mb-1 hover:bg-gray-200 duration-300 rounded-md">
-            Register
-          </button>
-        </Link>
+        <button
+          className="w-full text-center border border-gray-600 text-base bg-gray-300 mt-3 mb-1 hover:bg-gray-200 duration-300 rounded-md"
+          onClick={register}
+        >
+          Create your Amazon Account
+        </button>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default Register;

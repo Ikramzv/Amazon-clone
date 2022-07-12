@@ -41,4 +41,25 @@ export const data = [
         price:245.99,
         rating:4,
     },
+    {
+        id:"3124443",
+        image:"https://m.media-amazon.com/images/I/717dWfmxXVL._AC_UL480_QL65_.jpg",
+        title:"Roku Express | HD Streaming Media Player with High Speed HDMI Cable and Simple Remote",
+        price: 545.99,
+        rating: 5,
+    },
+    {
+        id:"1244531",
+        image:"https://m.media-amazon.com/images/I/71Llge105IL._AC_UL480_QL65_.jpg",
+        title:"Original HP 67XL Black High-yield Ink Cartridge | Works with HP DeskJet 1255, 2700, 4100 Series, HP ENVY 6000, 6400 Series | Eligible for Instant",
+        price:181.99,
+        rating: 4,
+    },
+    {
+        id:"1234033",
+        image:"https://m.media-amazon.com/images/I/81tjLksKixL._AC_UL480_QL65_.jpg",
+        title:"Seagate Portable 2TB External Hard Drive Portable HDD – USB 3.0 for PC, Mac, PlayStation, & Xbox - 1-Year Rescue Service (STGX2000400)",
+        price: 872.99,
+        rating:4,
+    },
 ]

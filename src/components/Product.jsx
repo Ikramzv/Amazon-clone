@@ -5,7 +5,6 @@ import { actionTypes } from "../AppState/reducer";
 
 function Product({ id, title, image, price, rating }) {
   const [{ basket }, dispatch] = useStateValue();
-  console.log(basket);
 
   const addToBasket = () => {
     const found = basket.some((item) => item.id == id);
@@ -22,9 +21,13 @@ function Product({ id, title, image, price, rating }) {
     }
   };
   return (
-    <div className="flex flex-row bg-white z-20 items-center justify-between p-3 md:p-5 w-full h-[200px] md:max-h-[400px] md:min-h-[100px] border border-gray-200">
-      <div className="flex flex-col h-full md:h-[100px] md:mb-[15px] self-start flex-1 md:flex-initial ">
-        <p className="text-black">{title}</p>
+    <div
+      className="flex flex-row bg-white z-20 items-center justify-between p-3 md:p-5 w-full md:w-max rounded-lg
+    h-[200px] md:max-h-[500px] md:min-h-[100px] md:h-auto border border-gray-200 cursor-pointer
+    md:hover:scale-110 hover:z-50 duration-500 hover:shadow-xl "
+    >
+      <div className="flex flex-col h-full md:mb-[15px] self-start flex-1 md:flex-initial ">
+        <p className="text-black md:w-[300px] ">{title}</p>
         <div className="flex flex-col mt-auto">
           <p className="text-black md:mt-1.5 mt-auto font-bold">
             <span className="text-red-500">$</span>

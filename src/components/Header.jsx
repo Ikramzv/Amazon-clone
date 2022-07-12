@@ -4,6 +4,10 @@ import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Link } from "react-router-dom";
 import { useStateValue } from "../AppState/AppState";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { actionTypes } from "../AppState/reducer";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebase";
 
 function Header() {
   const [{ basket, user }, dispatch] = useStateValue();
@@ -13,13 +17,15 @@ function Header() {
     setAnimation(true);
   }, [basket]);
 
-  window.addEventListener("load", () => {
-    if (basket.length === 0) {
-      setAnimation(false);
-    } else if (basket.length > 0) {
-      setAnimation(true);
-    }
-  });
+  const Logout = () => {
+    signOut(auth).then(() => {
+      console.log("User signed out");
+    });
+    dispatch({
+      type: actionTypes.SET_USER,
+      user: null,
+    });
+  };
 
   return (
     <div className="flex items-center justify-between md:h-[60px] h-[50px] bg-[#131921] sticky top-0 z-[100] p-1 md:py-3 md:px-4">
@@ -38,18 +44,38 @@ function Header() {
         />
         <SearchIcon className="svg" />
       </div>
-      <div className="flex items-center justify-evenly gap-1 md:gap-3 pl-2 md:pl-6">
-        <Link to={"login"}>
-          <div className="flex flex-col cursor-pointer mx-[10px]">
-            <span className="text-[8px] md:text-[10px] text-gray-400">
-              Hello
-            </span>
-            <span className="text-white text-[10px] md:text-[13px] font-extrabold">
-              Sign in
-            </span>
-          </div>
-        </Link>
-        <div className="flex items-center flex-col cursor-pointer">
+      <motion.div
+        initial={{ x: "100%", opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: "100%", opacity: 0 }}
+        className="flex items-center duration-700 justify-evenly gap-1 md:gap-3 pl-2 md:pl-6"
+      >
+        <div className="group flex flex-col relative cursor-pointer mx-[10px] hover:text-gray-400 duration-500">
+          <span className="text-[8px] md:text-[10px] text-gray-400 capitalize">
+            Hello {user?.email.split("@")[0]}
+          </span>
+          <span className="text-white text-[10px] md:text-[13px] font-extrabold">
+            Sign in
+          </span>
+          {user ? (
+            <div
+              className="absolute top-[130%] w-[120px] min-h-max -left-6 z-50 text-[#111] duration-500 origin-top scale-y-0 group-hover:scale-y-100
+              font-semibold bg-slate-600 overflow-hidden rounded-md"
+            >
+              <ul className="flex flex-col h-full w-full">
+                <li
+                  className="px-1 pb-1 border-b border-b-gray-500 hover:bg-gray-200 duration-500"
+                  onClick={Logout}
+                >
+                  Log out
+                </li>
+              </ul>
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+        <div className="flex items-center flex-col cursor-pointer hover:text-gray-400 duration-500">
           <span className="text-[8px] md:text-[10px] text-gray-400">
             Returns
           </span>
@@ -57,13 +83,13 @@ function Header() {
             & Orders
           </span>
         </div>
-        <div className="flex items-center flex-col cursor-pointer">
+        <div className="flex items-center flex-col cursor-pointer hover:text-gray-400 duration-500">
           <span className="text-[8px] md:text-[10px] text-gray-400">Your</span>
           <span className="text-white text-[10px] md:text-[13px] font-extrabold ">
             Prime
           </span>
         </div>
-      </div>
+      </motion.div>
       <Link to={"/check_out"}>
         <div
           className={`cursor-pointer mr-1 md:mr-2 flex items-center rounded-full duration-200 active:scale-90`}

@@ -21,6 +21,9 @@ module.exports = {
             transform: 'rotate(360deg)'
           }
         }
+      },
+      gridAutoColumns : {
+        homeGrid: 'minmax(100px, auto) minmax(max-content, 2fr) minmax(20%, 80vmax)'
       }
     },
   },
