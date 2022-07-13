@@ -1,15 +1,15 @@
 import { useElements, useStripe, CardElement } from "@stripe/react-stripe-js";
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useStateValue } from "../AppState/AppState";
 import CheckOutProduct from "./CheckOutProduct";
 import axios from "../Axios/axios";
 import { actionTypes } from "../AppState/reducer";
+import db from "../firebase/firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 function Payment() {
-  const [{ basket, user }, dispatch] = useStateValue();
+  const [{ basket, user, itemQty }, dispatch] = useStateValue();
 
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(true);
@@ -24,43 +24,56 @@ function Payment() {
   const elements = useElements();
 
   const handleSubmit = async (e) => {
+    // to avoid from refreshing the page while submitting the form
     e.preventDefault();
     setProcessing(true);
+    // Confirm Card payment method if it resolves the promise navigate to Orders page
     const payload = await stripe
       .confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
         },
       })
-      .then((payment) => {
-        console.log(payment);
+      .then(async ({ paymentIntent }) => {
+        await setDoc(
+          doc(collection(db, `users/${user?.uid}/orders`), paymentIntent?.id),
+          {
+            basket: basket,
+            amount: paymentIntent.amount,
+            created: paymentIntent.created,
+            currency: paymentIntent.currency,
+          }
+        );
+        dispatch({
+          type: actionTypes.REMOVE_FROM_BASKET,
+          basket: [],
+        });
+        localStorage.removeItem("basketItems");
         setSucceeded(true);
         setError(null);
         setProcessing(false);
-        dispatch({
-          type: actionTypes.REMOVE_FROM_BASKET,
-          items: [],
-        });
-        localStorage.removeItem("basketItems");
-        navigate("/");
+        navigate("/orders");
       });
     return payload;
   };
 
   const handleChange = (e) => {
+    // If It has possible errors display it
     setDisabled(e.empty);
     setError(e.error ? e.error.message : "");
   };
 
   const calculateTotal = () => {
     return basket.reduce((initial, item) => {
-      return parseFloat(initial + item.price);
+      return parseFloat(initial + parseFloat(item.price * item.qty));
     }, 0);
   };
 
   const getClientSecret = async () => {
+    // Every changes of total value of items send post request to the server. Then re-generate client secret based on value.
+    // Then set the clientSecret which is sent from server to client side.
     const response = await axios.post(
-      `/payments/create?total=${calculateTotal().toFixed(2) * 100}`
+      `/payments/create?total=${(calculateTotal().toFixed(2) * 100).toFixed(0)}`
     );
     setClientSecret(response.data.clientSecret);
   };
@@ -75,8 +88,7 @@ function Payment() {
     }
     // Generate the special stripe secret which allow us to charge the customer when every time basket have changed
     getClientSecret();
-    console.log(clientSecret);
-  }, [basket]);
+  }, [basket, itemQty]);
 
   return (
     <div className="w-full pb-5 min-h-screen">
@@ -101,16 +113,16 @@ function Payment() {
         </div>
       </div>
       <h2 className="text-center text-lg md:text-xl font-bold text-white bg-gray-900 w-full mt-2">
-        Review items and Delivery
+        <span className="text-red-700">Lastly</span> Review items and Delivery
       </h2>
       <div className="md:w-[60%] md:mx-auto md:px-3">
         {basket.map((item, i) => (
-          <CheckOutProduct item={item} key={i} />
+          <CheckOutProduct item={item} key={i} hideButtons />
         ))}
       </div>
       <div className="text-center mb-5">
         <h3 className="text-lg md:text-xl w-full bg-gray-900 text-white font-bold">
-          Payment Method
+          <span className="text-red-700">Payment</span> Method
         </h3>
       </div>
       <div className="flex flex-col w-full md:w-[75%] md:mx-auto">

@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { useStateValue } from "../AppState/AppState";
 
 function SubTotal() {
-  const [{ basket }, dispatch] = useStateValue();
+  const [{ basket, itemQty }, dispatch] = useStateValue();
   const [subTotal, setSubTotal] = useState(Number(0));
   const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate("");
 
   const summingUpItemsPrices = useCallback(() => {
     return basket.reduce((initial, item) => {
-      return item ? Number(initial + item.price) : 0;
+      return item ? Number(initial + Number(item.price * item.qty)) : 0;
     }, 0);
   }, [basket]);
 
@@ -23,7 +23,7 @@ function SubTotal() {
     } else {
       setDisabled(true);
     }
-  }, [basket]);
+  }, [basket, itemQty]);
 
   return (
     <div className="flex flex-col justify-between w-full h-auto p-3 bg-slate-200 border border-solid border-[#dddddd] rounded-[3px] ">

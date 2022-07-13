@@ -3,15 +3,17 @@ import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDbtyNYDDU-6ANbpQ8M9WYaW056J4lm04Y",
-  authDomain: "clone-e3c83.firebaseapp.com",
-  projectId: "clone-e3c83",
-  storageBucket: "clone-e3c83.appspot.com",
-  messagingSenderId: "161999598470",
-  appId: "1:161999598470:web:dcfecaf83a46f90e79b207"
+  apiKey: "AIzaSyBIwrjwPyKxWukv0p3drFl5qgcx9yKSQw0",
+  authDomain: "clone-e456f.firebaseapp.com",
+  projectId: "clone-e456f",
+  storageBucket: "clone-e456f.appspot.com",
+  messagingSenderId: "1092258434632",
+  appId: "1:1092258434632:web:540c3b39d5027d7794d27d"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
+const db = getFirestore(app)
 
 export { auth }
+export default db

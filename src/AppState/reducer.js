@@ -2,6 +2,8 @@ export const actionTypes = {
     ADD_TO_BASKET: 'ADD_TO_BASKET',
     REMOVE_FROM_BASKET: 'REMOVE_FROM_BASKET',
     SET_USER: 'SET_USER',    
+    SET_ITEM_QTY: 'SET_ITEM_QTY',
+    SET_TRIGGERED_ITEM_ID: 'SET_TRIGGERED_ITEM_ID',
 }
 
 export const reducer = (state, action) => {
@@ -9,10 +11,7 @@ export const reducer = (state, action) => {
         case actionTypes.ADD_TO_BASKET:
             return {
                 ...state,
-                basket: action.item !== null ? [
-                    ...state.basket , 
-                    action.item
-                ] : state.basket
+                basket: action.basket
             }
         case actionTypes.REMOVE_FROM_BASKET :
             return {
@@ -23,6 +22,16 @@ export const reducer = (state, action) => {
             return {
                 ...state ,
                 user: action.user
+            }
+        case actionTypes.SET_ITEM_QTY: 
+            return {
+                ...state,
+                itemQty: action.itemQty
+            }
+        case actionTypes.SET_TRIGGERED_ITEM_ID: 
+            return {
+                ...state,
+                triggeredItemId: action.itemId
             }
         default: 
             return state

@@ -13,7 +13,9 @@ import Register from "./components/Register";
 import Payment from "./components/Payment";
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
+import Orders from "./components/Orders";
 
+// Inject Stripe to the project by inserting publishable key to loadStripe
 const promise = loadStripe('pk_test_51LKRZpKdVwb3mKDKsjvPxL8YDpI3R48Xtbu5mWjb5iL6JMTBUVRW72DDwzLmSjzUByvNfdrZ20Ot1gGzDZVyZkhi00iCdhP3r6')
 
 function App() {
@@ -35,8 +37,10 @@ function App() {
     })
   } , [])
 
+  {/* Wrap the App with Elements provider so that it will be available everywhere we need . 
+  To use Elements provider We need to pass loaded Stripe promise ( loadStripe() ) to stripe object  */}
   return (
-    <Elements stripe={promise} >
+    <Elements stripe={promise} > 
       <AnimatePresence>
         <div className="App">
           <Routes>
@@ -44,6 +48,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="check_out" element={<CheckOut />} />
               <Route path="payment" element={<Payment />} />
+              <Route path="/orders" element={<Orders />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register_account" element={<Register />} />

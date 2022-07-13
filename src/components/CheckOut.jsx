@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useStateValue } from "../AppState/AppState";
 import CheckOutProduct from "./CheckOutProduct";
 import SubTotal from "./SubTotal";
@@ -16,7 +16,9 @@ function CheckOut() {
         <div className="mr-[10px] p-[10px] border-b border-b-gray-300 border-solid   ">
           <h2 className="font-bold text-lg">Your shopping basket</h2>
           {basket &&
-            basket.map((item, i) => <CheckOutProduct key={i} item={item} />)}
+            basket.map((item, i) => (
+              <CheckOutProduct key={i} item={item} hideButtons />
+            ))}
         </div>
       </div>
       <div className="flex-1">

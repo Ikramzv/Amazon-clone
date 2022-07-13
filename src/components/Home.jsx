@@ -19,18 +19,11 @@ function Home() {
 
         <div className="grid gap-2 grid-cols-1 md:grid-cols-2 md:auto-cols-max px-2 md:px-4 w-full pb-16">
           {data.map((item, i) => (
-            <Product
-              key={i}
-              image={item.image}
-              id={item.id}
-              title={item.title}
-              price={item.price}
-              rating={item.rating}
-            />
+            <Product key={i} product={item} />
           ))}
         </div>
       </div>
-      <div className="flex flex-col fixed right-2 top-[20%] z-50 duration-500">
+      <div className="flex flex-col fixed right-2 top-[20%] z-50">
         <Notification />
       </div>
     </div>

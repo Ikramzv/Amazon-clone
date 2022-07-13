@@ -5,7 +5,7 @@ import NotificationItem from "./NotificationItem";
 function Notification() {
   const [{ basket }, dispatch] = useStateValue();
   return (
-    <div className="hidden lg:block duration-500">
+    <div className="hidden lg:block">
       {basket &&
         basket.map((item, i) => <NotificationItem item={item} key={i} />)}
     </div>

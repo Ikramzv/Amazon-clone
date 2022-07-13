@@ -7,14 +7,15 @@ import { actionTypes } from "../AppState/reducer";
 import { useRef } from "react";
 
 function NotificationItem({ item }) {
-  const [{ basket }, dispatch] = useStateValue();
+  const [{ basket, itemQty }, dispatch] = useStateValue();
   const [show, setShow] = useState(true);
-  const [transition, setTransition] = useState(false);
+  const [removeFunction, setRemoveFunction] = useState(false);
   const [animationStart, setAnimationStart] = useState(true);
   const [animationEnd, setAnimationEnd] = useState(false);
   const Div = useRef();
 
   const removeItem = (id) => {
+    item.qty = 0;
     const filtered = basket.filter((product) => product.id != id);
     dispatch({
       type: actionTypes.REMOVE_FROM_BASKET,
@@ -23,23 +24,25 @@ function NotificationItem({ item }) {
     localStorage.setItem("basketItems", JSON.stringify(filtered));
     setAnimationEnd(false);
     setAnimationStart(true);
-    setTransition(false);
+    setRemoveFunction(false);
   };
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   async function wait() {
-    await sleep(3000);
-    setAnimationStart(false);
-    setAnimationEnd(true);
-    await sleep(1000);
-    Div.current.style.display = "none";
+    if (!removeFunction) {
+      await sleep(3000);
+      setAnimationStart(false);
+      setAnimationEnd(true);
+      await sleep(400);
+      Div.current.style.display = "none";
+    }
   }
 
   useEffect(() => {
     wait();
-  }, [item]);
+  }, [itemQty]);
 
   return (
     <>
@@ -66,9 +69,9 @@ function NotificationItem({ item }) {
               ? { x: "100%", opacity: 1 }
               : ""
           }
-          onTransitionEnd={() => (transition ? removeItem(item?.id) : "")}
+          onTransitionEnd={() => (removeFunction ? removeItem(item.id) : "")}
           ref={Div}
-          className="relative duration-700 flex w-[300px] mb-2 h-[120px] px-2 py-1 border bg-gray-200 shadow-lg rounded-md mb-20s"
+          className="relative flex w-[300px] mb-2 h-[120px] px-2 py-1 border bg-gray-200 shadow-lg rounded-md mb-20s"
         >
           <img
             src={item.image}
@@ -87,18 +90,21 @@ function NotificationItem({ item }) {
                 />
               ))}
           </div>
-          <div
+          <motion.div
             onClick={() => {
               setAnimationStart(false);
               setAnimationEnd(true);
+              setRemoveFunction(true);
             }}
-            onTransitionEnd={() => setTransition(true)}
           >
             <DeleteIcon
               className="absolute right-1 top-1 cursor-pointer active:scale-50 
-            !transition-all !ease-in-out !duration-200 text-red-700"
+            !transition-all !ease-in-out  text-red-700"
             />
-          </div>
+          </motion.div>
+          <span className="text-red-600 animate-bounce text-lg font-bold absolute bottom-0 right-2">
+            x {item.qty}
+          </span>
         </motion.div>
       ) : (
         ""

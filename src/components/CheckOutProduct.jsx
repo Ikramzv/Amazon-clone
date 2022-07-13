@@ -1,18 +1,33 @@
-import Star from "@mui/icons-material/Star";
 import React, { useState } from "react";
 import { useStateValue } from "../AppState/AppState";
 import { actionTypes } from "../AppState/reducer";
 import { motion } from "framer-motion";
-import { updateCurrentUser } from "firebase/auth";
 
-function CheckOutProduct({ item }) {
-  const [{ basket }, dispatch] = useStateValue();
+import Star from "@mui/icons-material/Star";
+import { useEffect } from "react";
+
+function CheckOutProduct({ item, hideButtons }) {
+  const [{ basket, itemQty }, dispatch] = useStateValue();
   const [transition, setTransition] = useState(false);
   const [animationStart, setAnimationStart] = useState(true);
   const [animationEnd, setAnimationEnd] = useState(false);
+  const [qty, setQty] = useState(Number(item.qty));
+
+  const updateLocalStorage = () => {
+    dispatch({
+      type: actionTypes.SET_ITEM_QTY,
+      itemQty: [...itemQty, item.qty],
+    });
+    dispatch({
+      type: actionTypes.ADD_TO_BASKET,
+      basket: basket,
+    });
+    localStorage.setItem("basketItems", JSON.stringify(basket));
+  };
 
   const removeFromBasket = () => {
     const filtered = basket.filter((product) => product.id != item?.id);
+    item.qty = 0;
     dispatch({
       type: actionTypes.REMOVE_FROM_BASKET,
       items: filtered,
@@ -22,6 +37,25 @@ function CheckOutProduct({ item }) {
     setAnimationStart(true);
     setTransition(false);
   };
+
+  const handleItemQty = (act) => {
+    if (act === "plus") {
+      setQty(qty + 1);
+      item.qty += 1;
+    }
+    if (act === "minus") {
+      setQty(qty - 1);
+      item.qty -= 1;
+      if (item.qty === 0) {
+        removeFromBasket();
+      }
+    }
+  };
+
+  useEffect(() => {
+    updateLocalStorage();
+  }, [qty]);
+
   return (
     <motion.div
       initial={
@@ -55,11 +89,28 @@ function CheckOutProduct({ item }) {
       />
       <div className="flex flex-col md:pl-3 pl-2 md:gap-1 md:pt-1 ">
         <p className="font-bold text-sm md:text-base">{item.title}</p>
-        <p className="font-bold">
-          <span className="text-red-500">$</span>
-          <span className="ml-1">{item.price}</span>
-        </p>
-        <div className="flex items-center">
+        <div className="font-bold flex items-center mt-auto">
+          <span className="text-red-500 mr-1 ">$</span>
+          <span className="mr-2">{item.price}</span>
+          <span className="mr-2">x {item.qty}</span>
+          {hideButtons && (
+            <>
+              <button
+                className=" amazon-btn !p-1 md:p-2 md:!px-2 inline-flex items-center justify-center"
+                onClick={() => handleItemQty("minus")}
+              >
+                -
+              </button>
+              <button
+                className="ml-1 amazon-btn !p-1 md:p-2 md:!px-2 inline-flex items-center justify-center"
+                onClick={() => handleItemQty("plus")}
+              >
+                +
+              </button>
+            </>
+          )}
+        </div>
+        <div className="flex items-center mt-auto">
           {Array(item.rating)
             .fill()
             .map((_, i) => (
@@ -68,17 +119,18 @@ function CheckOutProduct({ item }) {
               </p>
             ))}
         </div>
-        <button
-          className="amazon-btn w-max text-sm md:text-base md:!mt-auto"
-          onClick={() => {
-            setAnimationStart(false);
-            setAnimationEnd(true);
-            setTransition(true);
-          }}
-          onTransitionEnd={() => (transition ? setTransition(true) : "")}
-        >
-          Remove from basket
-        </button>
+        {hideButtons && (
+          <button
+            className="amazon-btn w-max text-sm md:text-base md:!mt-auto"
+            onClick={() => {
+              setAnimationStart(false);
+              setAnimationEnd(true);
+              setTransition(true);
+            }}
+          >
+            Remove from basket
+          </button>
+        )}
       </div>
     </motion.div>
   );

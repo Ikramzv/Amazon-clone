@@ -45,4 +45,4 @@ app.post('/payments/create' , async (req,res) => {
 exports.api = functions.https.onRequest(app)
 
 // Endpoint
-// http://localhost:5001/clone-e3c83/us-central1/api
+// http://localhost:5001/clone-e456f/us-central1/api
