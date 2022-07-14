@@ -18,9 +18,7 @@ function Header() {
   }, [basket]);
 
   const Logout = () => {
-    signOut(auth).then(() => {
-      console.log("User signed out");
-    });
+    signOut(auth).then(() => {});
     dispatch({
       type: actionTypes.SET_USER,
       user: null,

@@ -44,9 +44,12 @@ function Payment() {
             currency: paymentIntent.currency,
           }
         );
+        basket.map((item) => {
+          return (item.qty = 0);
+        });
         dispatch({
           type: actionTypes.REMOVE_FROM_BASKET,
-          basket: [],
+          items: [],
         });
         localStorage.removeItem("basketItems");
         setSucceeded(true);

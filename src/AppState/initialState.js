@@ -3,7 +3,7 @@ import { fetchBasketItemsFromLocalStorage } from "../Functions/fetchFromLocalSto
 const fetchBasketItems = fetchBasketItemsFromLocalStorage()
 
 export const initialState = {
-    basket: fetchBasketItems,
+    basket: fetchBasketItems === 'undefined' ? [] : fetchBasketItems ,
     user: null,
     itemQty: [],
     triggeredItemId: ''
