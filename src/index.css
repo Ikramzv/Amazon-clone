@@ -56,3 +56,11 @@ body {
   -webkit-box-orient: vertical;
 }
 
+.line-clamp-for-product {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+}
+

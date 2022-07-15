@@ -47,7 +47,9 @@ function Product({ product }) {
     md:hover:scale-110 hover:z-50 duration-500 hover:shadow-xl "
     >
       <div className="flex flex-col h-full md:mb-[15px] self-start flex-1 md:flex-initial ">
-        <p className="text-black md:w-[300px] ">{product.title}</p>
+        <p className="text-black md:w-[300px] line-clamp-for-product">
+          {product.title}
+        </p>
         <div className="flex flex-col mt-auto">
           <p className="text-black md:mt-1.5 mt-auto font-bold">
             <span className="text-red-500">$</span>
@@ -72,7 +74,7 @@ function Product({ product }) {
           alt="box image"
         />
         <button
-          className="amazon-btn border-[#a88734 #9c7e31 #846a29] md:w-max"
+          className="amazon-btn border-[#a88734 #9c7e31 #846a29] w-max ml-auto md:w-max"
           onClick={() => {
             setItems([...basket, product]);
             setQty(qty + 1);
